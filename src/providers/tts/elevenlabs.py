@@ -26,7 +26,7 @@ class ElevenLabsProvider(TTSProvider):
         output_path.parent.mkdir(parents=True, exist_ok=True)
         resp = requests.post(
             f"{self.BASE_URL}/text-to-speech/{voice_id}",
-            headers={"xi-api-key": self._api_key},
+            headers={"xi-api-key": self._api_key, "Accept": "audio/wav"},
             json={"text": text, "model_id": "eleven_multilingual_v2"},
             timeout=60,
         )

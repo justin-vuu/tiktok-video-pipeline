@@ -2,6 +2,7 @@ from __future__ import annotations
 import json
 import logging
 import random
+import re
 import time
 import uuid
 import wave
@@ -33,6 +34,14 @@ def _pick_music(music_dir: Path, override: str | None, saved: str | None) -> Pat
             return candidate
     files = list(music_dir.glob("*.mp3")) + list(music_dir.glob("*.wav"))
     return random.choice(files) if files else None
+
+
+def _extract_title(script_path: Path) -> str:
+    """Read [title:] from .txt without parsing scenes or calling any LLM."""
+    for line in script_path.read_text(encoding="utf-8").splitlines():
+        if m := re.match(r"\[title:\s*(.+?)\]", line):
+            return m.group(1).strip()
+    return "untitled"
 
 
 def _load_or_generate_script(
@@ -90,14 +99,9 @@ def run_pipeline(
     warnings: list[str] = []
     t_start = time.time()
 
-    # Probe parse to get title for video_id (before we know video_dir)
-    # We use a dummy json path that won't exist to force fresh parse for title
-    _dummy_json = Path(f"/nonexistent/_probe_{uuid.uuid4().hex}.json")
-    title, final_style, scenes = _load_or_generate_script(
-        script_path, _dummy_json, style, cfg, warnings
-    )
-
-    video_id = output_name or f"{slugify(title)}-{uuid.uuid4().hex[:4]}"
+    # Cheaply extract title from script text without calling any LLM
+    title_for_id = _extract_title(script_path)
+    video_id = output_name or f"{slugify(title_for_id)}-{uuid.uuid4().hex[:4]}"
     video_dir = output_base / video_id
     video_dir.mkdir(parents=True, exist_ok=True)
     script_json = video_dir / "script.json"
@@ -105,6 +109,16 @@ def run_pipeline(
     images_dir = video_dir / "images"
     subtitle_srt = video_dir / "subtitle.srt"
     final_video = video_dir / "final.mp4"
+
+    # Add file handler for this run
+    file_handler = logging.FileHandler(video_dir / "pipeline.log", mode="a")
+    file_handler.setFormatter(logging.Formatter("[%(asctime)s] [%(name)-12s] %(message)s", datefmt="%H:%M:%S"))
+    logging.getLogger().addHandler(file_handler)
+
+    # Now parse/load the script (resumes from script.json if it exists)
+    title, final_style, scenes = _load_or_generate_script(
+        script_path, script_json, style, cfg, warnings
+    )
 
     log.info("[PIPELINE] Starting video: %s (%d scenes)", video_id, len(scenes))
 
@@ -124,15 +138,14 @@ def run_pipeline(
         log.info("[SCRIPT] Saved -> script.json")
     else:
         data = json.loads(script_json.read_text(encoding="utf-8"))
-        scenes = [Scene(id=s["id"], text=s["text"], image_prompt=s["image_prompt"]) for s in data["scenes"]]
-        final_style = data.get("style", final_style)
         saved_music = data.get("music_file")
         music_file = _pick_music(music_dir, music_override, saved_music) if music_dir.exists() else None
 
     durations: list[float] = []
 
     # Step 2: TTS
-    if not skip_tts and not (audio_dir / "scene_001.wav").exists():
+    last_audio = audio_dir / f"scene_{len(scenes):03d}.wav"
+    if not skip_tts and not last_audio.exists():
         log.info("[TTS] Synthesizing %d scenes...", len(scenes))
         provider = get_tts_provider(cfg)
         durations = run_tts(scenes, provider, audio_dir, voice=voice)
@@ -143,7 +156,8 @@ def run_pipeline(
         durations = _read_durations(audio_dir, len(scenes))
 
     # Step 3: Image generation
-    if not skip_image and not (images_dir / "scene_001.png").exists():
+    last_image = images_dir / f"scene_{len(scenes):03d}.png"
+    if not skip_image and not last_image.exists():
         log.info("[IMAGE] Generating %d images...", len(scenes))
         provider = get_image_provider(cfg)
         run_image_gen(scenes, provider, images_dir, final_style, cfg, warnings)

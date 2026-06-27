@@ -21,13 +21,6 @@ def _build_ken_burns_filter(
     )
 
 
-def _format_fade_filter(duration: float, total_duration: float) -> str:
-    out_start = total_duration - duration
-    return (
-        f"fade=t=in:st=0:d={duration},"
-        f"fade=t=out:st={out_start:.3f}:d={duration}"
-    )
-
 
 def run_video_assembler(
     images_dir: Path,
@@ -71,12 +64,13 @@ def run_video_assembler(
             scene_clips.append(clip_out)
 
         concat_out = tmp / "concat.mp4"
-        _concat_clips(scene_clips, concat_out)
+        _concat_clips(scene_clips, concat_out, tmp)
 
         subbed = tmp / "subbed.mp4"
         sub_cfg = cfg.subtitle
+        safe_sub_path = str(subtitle_srt).replace("\\", "/").replace(":", "\\:").replace(" ", "\\ ")
         subtitle_filter = (
-            f"subtitles={subtitle_srt}:force_style='"
+            f"subtitles={safe_sub_path}:force_style='"
             f"FontFile={sub_cfg.font},"
             f"FontSize={sub_cfg.font_size},"
             f"PrimaryColour=&H00ffffff,"
@@ -95,19 +89,17 @@ def run_video_assembler(
     log.info("[VIDEO] Done → %s", output_video)
 
 
-def _concat_clips(clips: list[Path], output: Path) -> None:
+def _concat_clips(clips: list[Path], output: Path, tmp: Path) -> None:
     if len(clips) == 1:
         shutil.copy2(clips[0], output)
         return
 
-    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as f:
-        for clip in clips:
-            f.write(f"file '{clip}'\n")
-        list_file = f.name
+    list_file = tmp / "concat_list.txt"
+    list_file.write_text("\n".join(f"file '{clip}'" for clip in clips))
 
     _run([
         "ffmpeg", "-y", "-f", "concat", "-safe", "0",
-        "-i", list_file,
+        "-i", str(list_file),
         "-c:v", "libx264", "-preset", "fast", "-c:a", "aac",
         "-pix_fmt", "yuv420p",
         str(output),
@@ -120,7 +112,7 @@ def _mix_music(video: Path, music: Path, output: Path, volume: float) -> None:
         "-i", str(video),
         "-stream_loop", "-1", "-i", str(music),
         "-filter_complex",
-        f"[1:a]volume={volume},afade=t=in:st=0:d=2,afade=t=out:st=-2:d=2[music];"
+        f"[1:a]volume={volume},afade=t=in:st=0:d=2[music];"
         f"[0:a][music]amix=inputs=2:duration=first[aout]",
         "-map", "0:v", "-map", "[aout]",
         "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
