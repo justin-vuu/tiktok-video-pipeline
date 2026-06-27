@@ -1,0 +1,39 @@
+providers:
+  tts: xtts           # xtts | elevenlabs
+  image: sdxl         # sdxl | replicate
+  script_prompt: ollama  # ollama | none
+
+models:
+  xtts: xtts_v2
+  ollama: qwen2.5:14b
+  sdxl: stabilityai/sdxl-turbo
+
+voices:
+  default: vi-female
+  vi-female:
+    xtts: assets/voices/vi_female_sample.wav
+    elevenlabs: "Rachel"
+
+image_styles:
+  cinematic: "cinematic lighting, moody atmosphere, symbolic, no text, no watermark, 9:16 aspect ratio"
+  painterly: "watercolor painting, artistic, emotional, no text, 9:16 aspect ratio"
+  abstract: "abstract symbolic, geometric, minimalist, moody, no text, 9:16 aspect ratio"
+
+video:
+  resolution: [1080, 1920]
+  fps: 30
+  music_volume: 0.15
+  ken_burns_scale: 1.08
+  fade_duration: 0.3
+
+subtitle:
+  font: assets/fonts/NotoSans-Bold.ttf
+  font_size: 52
+  color: white
+  outline_color: black
+  outline_width: 3
+
+ollama:
+  base_url: "http://localhost:11434"
+  timeout_first: 10
+  timeout_retry: 30
