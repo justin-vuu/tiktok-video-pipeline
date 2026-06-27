@@ -153,14 +153,27 @@ def run_pipeline(
         log.info("[IMAGE] Skipped (images exist or --skip-image)")
 
     # Step 4: Subtitles
+    audio_files_exist = list(audio_dir.glob("scene_*.wav")) if audio_dir.exists() else []
     if not subtitle_srt.exists():
-        log.info("[SUBTITLE] Generating subtitles...")
-        run_subtitle_gen(audio_dir, subtitle_srt, scene_count=len(scenes))
-        log.info("[SUBTITLE] Done")
+        if not audio_files_exist:
+            log.info("[SUBTITLE] Skipped (no audio files — run without --skip-tts to generate)")
+        else:
+            log.info("[SUBTITLE] Generating subtitles...")
+            run_subtitle_gen(audio_dir, subtitle_srt, scene_count=len(scenes))
+            log.info("[SUBTITLE] Done")
     else:
         log.info("[SUBTITLE] Skipped (subtitle.srt exists)")
 
     # Step 5: Video assembly
+    images_exist = list(images_dir.glob("scene_*.png")) if images_dir.exists() else []
+    if not audio_files_exist or not images_exist:
+        log.info(
+            "[VIDEO] Skipped (missing %s%s— provide audio and images to assemble video)",
+            "audio " if not audio_files_exist else "",
+            "images " if not images_exist else "",
+        )
+        _print_summary(final_video, time.time() - t_start, warnings)
+        return final_video
     log.info("[VIDEO] Assembling final video...")
     run_video_assembler(
         images_dir=images_dir,
