@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <meta name="description" content="Một ý tưởng nhỏ, một câu chuyện chạm. Studio tạo video chiêm nghiệm của riêng bạn.">
+  <title>LẶNG — Một ý tưởng, một thước phim</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='22' fill='%233d4b36'/%3E%3Cpath d='M25 25v32h30' fill='none' stroke='%23f5f4ef' stroke-width='5'/%3E%3Ccircle cx='53' cy='25' r='4' fill='%23c9d5ae'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/><path d="m20 2 .6 1.4L22 4l-1.4.6L20 6l-.6-1.4L18 4l1.4-.6L20 2Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h9m4 0h3M4 12h3m4 0h9M4 18h11m4 0h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 3C8 2 3 7 4 13s9 9 13 2c2-4 3-12 3-12ZM4 21 15 9"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 3v.1"/></symbol>
+  </svg>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Lặng Studio, trang chủ"><span class="brand-mark">L<span>•</span></span><span>LẶNG<small>YOUR LITTLE STUDIO</small></span></a>
+    <div class="workspace-label">KHÔNG GIAN CỦA BẠN</div>
+    <nav aria-label="Điều hướng">
+      <button class="nav-item active" id="nav-create"><svg><use href="#i-spark"/></svg>Tạo video<span class="nav-plus">+</span></button>
+      <button class="nav-item" id="nav-library"><svg><use href="#i-grid"/></svg>Thư viện của tôi<span class="library-count" id="library-count">0</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="quiet-note"><svg><use href="#i-leaf"/></svg><p>Không cần vội.<br>Câu chuyện hay cần<br>một chút khoảng lặng.</p></div>
+      <button id="help-button" class="help-button"><svg><use href="#i-help"/></svg>Mọi thứ hoạt động thế nào?</button>
+      <div class="local-status"><span class="status-dot"></span><div>Chỉ trên máy của bạn<small>Không tự động đăng video</small></div></div>
+    </div>
+  </aside>
+  <main>
+    <header class="topbar"><div>Studio <span>/</span> <strong id="breadcrumb">Tạo video mới</strong></div><span class="local-pill"><span class="status-dot"></span>Local workspace</span></header>
+    <section id="create-view">
+      <div class="page-heading"><div class="eyebrow">TỪ MỘT Ý NGHĨ NHỎ</div><h1>Kể một điều <em>đáng ngẫm.</em></h1><p>Bạn mang đến ý tưởng. Lặng giúp bạn biến nó thành một thước phim.</p></div>
+      <div class="studio-layout">
+        <form id="create-form" class="composer">
+          <section class="form-section topic-section">
+            <div class="section-label"><span class="step-number">01</span><h2>Hôm nay, bạn muốn kể gì?</h2><span class="soft-label">Bắt đầu từ đây</span></div>
+            <div class="textarea-wrap"><textarea id="topic" name="topic" maxlength="600" minlength="3" required placeholder="Ví dụ: Đừng vì sợ mất lòng mà quên mất chính mình…" aria-label="Chủ đề video"></textarea><div class="textarea-footer"><span>Một chủ đề, một suy nghĩ, hoặc một câu chuyện.</span><span id="character-count">0/600</span></div></div>
+            <div class="suggestions"><span>Thử một ý tưởng</span><button type="button" data-topic="Học cách buông bỏ những điều không thuộc về mình">Buông bỏ ↗</button><button type="button" data-topic="Đừng vì sợ mất lòng mà quên mất chính mình">Sống cho mình ↗</button><button type="button" data-topic="Trưởng thành là khi ta thôi cố giải thích với tất cả mọi người">Trưởng thành ↗</button></div>
+          </section>
+          <section class="form-section">
+            <div class="section-label"><span class="step-number">02</span><h2>Chọn một sắc thái</h2><span class="soft-label">Mỗi chuyện, một cách kể</span></div>
+            <div class="style-grid" role="group" aria-label="Phong cách video">
+              <label class="style-card"><input type="radio" name="style" value="story" checked><div class="style-photo story-photo"><span class="style-badge">01 / ĐỜI THƯỜNG</span><span class="selected-mark"><svg><use href="#i-check"/></svg></span></div><div class="style-copy"><strong>Chuyện đời</strong><span>Gần gũi, chân thành, chạm cảm xúc.</span></div></label>
+              <label class="style-card"><input type="radio" name="style" value="healing"><div class="style-photo healing-photo"><span class="style-badge">02 / DỊU DÀNG</span><span class="selected-mark"><svg><use href="#i-check"/></svg></span></div><div class="style-copy"><strong>Chữa lành</strong><span>Một khoảng thở giữa bộn bề.</span></div></label>
+              <label class="style-card"><input type="radio" name="style" value="wisdom"><div class="style-photo wisdom-photo"><span class="style-badge">03 / CHIÊM NGHIỆM</span><span class="selected-mark"><svg><use href="#i-check"/></svg></span></div><div class="style-copy"><strong>Triết lý & cổ phong</strong><span>Chậm lại, nhìn sâu, nghĩ khác.</span></div></label>
+              <label class="style-card"><input type="radio" name="style" value="talk"><div class="style-photo talk-photo"><span class="style-badge">04 / TÂM SỰ</span><span class="selected-mark"><svg><use href="#i-check"/></svg></span></div><div class="style-copy"><strong>Tâm sự đời</strong><span>Lời bình gia đình, hôn nhân, phận người.</span></div></label>
+            </div>
+          </section>
+          <section class="form-section details-section">
+            <div class="section-label"><span class="step-number">03</span><h2>Thêm chút chất riêng</h2></div>
+            <div class="image-source"><label class="field-label">Hình ảnh</label><div class="segmented" role="group" aria-label="Nguồn ảnh"><label><input type="radio" name="images" value="codex" checked><span>Codex tự vẽ</span></label><label><input type="radio" name="images" value="gemini"><span>Gemini · tự dán prompt</span></label><label><input type="radio" name="images" value="library"><span>Ảnh thư viện</span></label></div><small id="image-source-note"></small></div>
+            <div class="image-source"><label class="field-label">Bố cục</label><div class="segmented" role="group" aria-label="Bố cục video"><label><input type="radio" name="layout" value="full" checked><span>Ảnh toàn màn hình</span></label><label><input type="radio" name="layout" value="frame"><span>Khung giấy · tít cố định</span></label></div><small id="layout-note"></small><input id="channel" name="channel" maxlength="28" placeholder="Tên kênh in trên logo tròn (để trống nếu không cần)" aria-label="Tên kênh" hidden></div>
+            <div class="basic-options">
+              <div><label class="field-label">Thời lượng mục tiêu</label><div class="segmented" role="group" aria-label="Thời lượng"><label><input type="radio" name="duration" value="30"><span>~30s</span></label><label><input type="radio" name="duration" value="45" checked><span>~45s</span></label><label><input type="radio" name="duration" value="60"><span>~60s</span></label></div></div>
+              <div><label for="voice" class="field-label">Giọng kể</label><select id="voice" name="voice"><option value="auto">Tự chọn theo sắc thái</option><option value="male">Nam Minh · Nam trầm</option><option value="female">Hoài My · Nữ ấm</option></select></div>
+            </div>
+            <details class="advanced"><summary><svg><use href="#i-sliders"/></svg>Tùy chỉnh thêm<span>AI, nhạc & phụ đề</span></summary><div class="advanced-content"><label class="provider-label">AI viết kịch bản<select name="provider" id="provider"><option value="claude">Claude Code</option><option value="codex">Codex</option></select></label><label class="toggle-label"><input type="checkbox" id="music" name="music" checked><span class="switch"></span>Nhạc nền nhẹ</label><label class="toggle-label"><input type="checkbox" id="subtitles" name="subtitles" checked><span class="switch"></span>Phụ đề tiếng Việt</label><p class="provider-note">Dùng phiên đăng nhập CLI trên máy và hạn mức gói của bạn. Giọng đọc cần Internet.</p></div></details>
+          </section>
+          <div class="create-footer"><button type="submit" class="primary-button" id="generate"><svg><use href="#i-spark"/></svg><span>Tạo thước phim của tôi</span><svg><use href="#i-arrow"/></svg></button><p>Một ý tưởng → kịch bản → hình ảnh → giọng kể → video của bạn.</p></div>
+          <div id="form-error" class="error-message" role="alert" hidden></div>
+        </form>
+        <aside class="preview-panel">
+          <div class="preview-heading"><span>MỘT CHÚT HÌNH DUNG</span><span>9:16</span></div>
+          <div class="phone-preview" id="phone-preview">
+            <div class="preview-shade"></div><span class="preview-brand">LẶNG / STUDIO</span><span class="preview-demo" id="preview-demo">MINH HỌA PHONG CÁCH</span>
+            <div class="preview-quote" id="preview-quote"><span class="quote-stroke"></span><p>Có những ngày,<br>chậm lại cũng là<br><em>một cách đi xa.</em></p><span class="preview-caption">MỘT CHÚT CHIÊM NGHIỆM MỖI NGÀY</span></div>
+            <video id="video-player" controls playsinline preload="metadata" hidden></video>
+            <div class="preview-bottom" id="preview-bottom"><span><svg><use href="#i-film"/></svg>Video dọc · 720p</span><span id="preview-duration">~45 giây</span></div>
+          </div>
+          <div class="preview-meta" id="preview-meta"><span class="little-wave">▂ ▅ ▃ ▇ ▄ ▂</span><div>Nhẹ nhàng. Vừa đủ. Là bạn.<small>Ảnh chuyển động chậm · Giọng kể tiếng Việt</small></div></div>
+          <div class="progress-card" id="progress-card" hidden aria-live="polite"><div class="progress-title"><strong id="progress-title">Đang tạo video</strong><span id="progress-percent">0%</span></div><div class="progress-track"><div id="progress-fill"></div></div><p id="progress-message"></p><div class="waiting-actions" id="waiting-actions" hidden><button type="button" id="render-now" class="primary-button render-button"><svg><use href="#i-film"/></svg><span>Dựng video</span></button><button type="button" id="storyboard-link" class="text-button">Xem các cảnh và prompt ↓</button></div><button type="button" id="cancel-button" class="text-button">Dừng tạo video</button><button type="button" id="retry-button" class="secondary-button" hidden>Thử lại từ bước đã lưu</button></div>
+          <div id="result-actions" hidden><a id="download-video" class="primary-button" download><svg><use href="#i-download"/></svg>Tải video MP4</a><div class="file-links"><a id="download-script">Kịch bản</a><a id="download-subtitles">Phụ đề SRT</a><a id="download-sources">Nguồn ảnh</a></div><p id="result-info"></p></div>
+        </aside>
+      </div>
+      <div class="bottom-note"><svg><use href="#i-leaf"/></svg><span>Không cần biết dựng phim. Chỉ cần có điều muốn kể.</span><span class="bottom-note-end">MADE FOR YOUR QUIET IDEAS</span></div>
+      <section id="script-section" class="script-section" hidden><div class="eyebrow">CÂU CHUYỆN CỦA BẠN</div><h2 id="script-title"></h2>
+        <div id="gemini-guide" class="gemini-guide" hidden><ol><li><strong>Mở Gemini</strong> bằng tài khoản Pro. Giữ một cuộc trò chuyện cho cả video để nhân vật đồng nhất.</li><li><strong>Sao chép prompt</strong> từng cảnh theo thứ tự rồi dán vào Gemini. Nếu Gemini chỉ trả lời bằng chữ, chọn công cụ <em>Tạo ảnh</em> hoặc model Nhanh.</li><li><strong>Tải ảnh về máy</strong>, studio tự xếp vào cảnh trống đầu tiên. Hoặc kéo thả, dán ảnh (⌘V) vào cảnh.</li></ol><a class="secondary-button" href="https://gemini.google.com/app" target="_blank" rel="noopener">Mở Gemini ↗</a><p id="downloads-status" class="downloads-status"></p></div>
+        <div id="scene-list"></div>
+        <div id="storyboard-actions" class="storyboard-actions" hidden><button type="button" id="render-button" class="primary-button render-button"><svg><use href="#i-film"/></svg><span>Dựng video</span></button><p id="render-hint"></p></div>
+      </section>
+    </section>
+    <section id="library-view" hidden><div class="page-heading"><div class="eyebrow">NHỮNG ĐIỀU ĐÃ KỂ</div><h1>Góc nhỏ <em>của bạn.</em></h1><p>Video và kịch bản được lưu trên máy, để bạn quay lại bất cứ lúc nào.</p></div><div id="library-grid" class="library-grid"></div></section>
+    <footer>LẶNG STUDIO<span>Mỗi câu chuyện đều bắt đầu từ một ý nghĩ.</span><span>LOCAL EDITION / 01</span></footer>
+  </main>
+  <dialog id="help-dialog"><button class="dialog-close" aria-label="Đóng" id="close-help">×</button><div class="eyebrow">MỘT CHÚT HƯỚNG DẪN</div><h2>Bạn chỉ cần một ý tưởng.</h2><p>Nhập chủ đề, chọn sắc thái rồi bấm tạo. Bạn có thể để giọng đọc, nhạc và phụ đề ở mặc định.</p><ol><li><strong>Kịch bản:</strong> Claude Code hoặc Codex trên máy viết nội dung bằng phiên đăng nhập sẵn có.</li><li><strong>Hình ảnh:</strong> Mặc định, Codex trên máy tự vẽ ảnh riêng cho từng cảnh bằng gói ChatGPT của bạn, không cần API key. Hoặc chọn Gemini: studio chia cảnh theo mốc giây của giọng đọc và viết prompt riêng cho từng cảnh. Bạn dán prompt vào Gemini trên trình duyệt, tải ảnh về, studio tự xếp ảnh và dựng. Không dùng API trả phí. Chọn “Ảnh thư viện” nếu muốn chạy tự động bằng ảnh Unsplash có sẵn.</li><li><strong>Âm thanh:</strong> Giọng đọc tiếng Việt qua dịch vụ Edge TTS trực tuyến; nhạc ambient được tổng hợp ngay trên máy.</li><li><strong>Video:</strong> Dựng tại máy thành MP4 dọc 720 × 1280, có phụ đề theo lời đọc. Thời lượng thực tế phụ thuộc kịch bản.</li></ol><p>Giữ máy hoạt động trong khi tạo. Nếu mất mạng hoặc hết quota, bạn có thể thử lại từ bước đã lưu. Web không tự đăng lên TikTok.</p><p class="help-storage">Video nằm trong thư mục <code>.studio/jobs/</code> của dự án. Lần sau mở file <strong>Mo Lang Studio.command</strong> để bật web.</p></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
